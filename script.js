@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-   const apiRoot = 'https://tranquil-falls-40382.herokuapp.com/v1/task/';
+   const apiRoot = 'https://tranquil-falls-40382.herokuapp.com/v1/';
    const trelloApiRoot = 'https://tranquil-falls-40382.herokuapp.com/v1/trello/';
    const datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
    const $tasksContainer = $('[data-tasks-container]');
@@ -12,7 +12,7 @@ $(document).ready(function() {
    getAllTasks();
 
    function getAllAvailableBoards(callback, callbackArgs) {
-      var requestUrl = trelloApiRoot + 'getTrelloBoards';
+      var requestUrl = trelloApiRoot + 'boards';
 //      alert("Ajax: getAllAvailableBoards: " + requestUrl);
       $.ajax({
          url: requestUrl,
@@ -66,7 +66,7 @@ $(document).ready(function() {
    }
 
    function getAllTasks() {
-      const requestUrl = apiRoot + 'getTasks';
+      const requestUrl = apiRoot + 'tasks';
 //      alert("Ajax: getAllTasks: " + requestUrl);
       $.ajax({
          url: requestUrl,
@@ -87,7 +87,7 @@ $(document).ready(function() {
       var taskId = parentEl.attr('data-task-id');
       var taskTitle = parentEl.find('[data-task-name-input]').val();
       var taskContent = parentEl.find('[data-task-content-input]').val();
-      var requestUrl = apiRoot + 'updateTask';
+      var requestUrl = apiRoot + 'tasks';
 //      alert("Ajax: handleTaskUpdateRequest: " + requestUrl);
       $.ajax({
          url: requestUrl,
@@ -111,12 +111,10 @@ $(document).ready(function() {
    function handleTaskDeleteRequest() {
       var parentEl = $(this).parents('[data-task-id]');
       var taskId = parentEl.attr('data-task-id');
-      var requestUrl = apiRoot + 'deleteTask';
+      var requestUrl = apiRoot + 'tasks';
 //      alert("Ajax: handleTaskDeleteRequest: " + requestUrl);
       $.ajax({
-         url: requestUrl + '/?' + $.param({
-            taskId: taskId
-         }),
+         url: requestUrl + '/' + taskId,
          method: 'DELETE',
          success: function() {
             parentEl.slideUp(400, function() { parentEl.remove(); });
@@ -131,7 +129,7 @@ $(document).ready(function() {
       var taskTitle = $(this).find('[name="title"]').val();
       var taskContent = $(this).find('[name="content"]').val();
 
-      var requestUrl = apiRoot + 'createTask';
+      var requestUrl = apiRoot + 'tasks';
 //      alert("Ajax: handleTaskSubmitRequest: " + requestUrl);
       $.ajax({
          url: requestUrl,
@@ -174,14 +172,14 @@ $(document).ready(function() {
    }
 
    function handleCardCreationRequest(event) {
-      var requestUrl = trelloApiRoot + 'createTrelloCard';
+      var requestUrl = trelloApiRoot + 'cards';
       var $relatedTaskRow = $(event.target).parents('[data-task-id]');
       var relatedTaskId = $relatedTaskRow.attr('data-task-id');
       var relatedTask = availableTasks[relatedTaskId];
       var selectedListId = $relatedTaskRow.find('[data-list-name-select]').val();
 
       if (!selectedListId) {
-         alert('You have to select a board and a list first!');
+//         alert('You have to select a board and a list first!');
          return;
       }
 //      alert("Ajax: handleCardCreationRequest: " + requestUrl);
@@ -198,7 +196,7 @@ $(document).ready(function() {
          }),
          success: function(data) {
             console.log('Card created - ' + data.shortUrl);
-            alert('Card created - ' + data.shortUrl);
+//            alert('Card created - ' + data.shortUrl);
          }
        });
    }
